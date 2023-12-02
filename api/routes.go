@@ -17,5 +17,4 @@ func SetupRoutes(e *echo.Echo) {
 	e.GET("/produto", handler.GetProduto)
 	e.GET("/venda", handler.GetVenda)
 	e.GET("/produto_venda", handler.GetProdutoVenda)
-
 }
