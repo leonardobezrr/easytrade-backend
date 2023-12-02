@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 // esse diretório irá armazenas as structs
 
 type Usuarios struct {
@@ -23,3 +25,12 @@ type Produto_Venda struct {
 	Valor_unitario float64 `json:"valor_unitario"`
 	Quantidade int64 `json:"quantidade"`
 }
+
+type Venda struct {
+	ID string `json:"id"`
+	Data_venda time.Time `json:"date"`
+	Valor_venda float64 `json:"valor_venda"`
+	Produto []Produtos 
+	Usuarios
+}
+
