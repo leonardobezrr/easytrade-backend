@@ -13,8 +13,11 @@ func SetupRoutes(e *echo.Echo) {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
 
-	e.GET("/usuarios", handler.GetUsuario)
-	e.GET("/produto", handler.GetProduto)
-	e.GET("/venda", handler.GetVenda)
-	e.GET("/produto_venda", handler.GetProdutoVenda)
+	e.POST("/criarusuario", func(c echo.Context) error {
+		return handler.PostUsuario(c)
+	})
+	// e.GET("/usuarios", handler.GetUsuario)
+	// e.GET("/produto", handler.GetProduto)
+	// e.GET("/venda", handler.GetVenda)
+	// e.GET("/produto_venda", handler.GetProdutoVenda)
 }
