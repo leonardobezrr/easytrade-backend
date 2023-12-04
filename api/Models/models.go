@@ -17,9 +17,11 @@ type Produtos struct {
 	Descricao string `json:"descricao"`
 	Preco float64 `json:"preco"`
 	Qtd_estoque int64 `json:"qtd_estoque"`
+	Usuarios
 }
 
 type Produto_Venda struct {
+	ID string `json:"id"`
 	IDProduto string `json:"idproduto"`
 	IDVenda string `json:"idvenda"`
 	Valor_unitario float64 `json:"valor_unitario"`
