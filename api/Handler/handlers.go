@@ -23,12 +23,33 @@ func PostUsuario(c echo.Context) error {
 	if err != nil {
 		// Handle the database insertion error
 		fmt.Println(err)
-		return echo.NewHTTPError(http.StatusInternalServerError, "Error inserting user into the database")
+		return echo.NewHTTPError(http.StatusInternalServerError, "Erro ao inserir usuário no banco de dados")
 	}
 
 	// Return a success response with the inserted user ID
 	return c.JSON(http.StatusCreated, map[string]interface{}{
-		"message": fmt.Sprintf("User inserted successfully with ID: %d", id),
+		"message": fmt.Sprintf("Usuário inserido com sucesso ID: %d", id),
+	})
+}
+
+func PostProduto(c echo.Context) error {
+	produto := models.Produtos{}
+	err := c.Bind(&produto)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Invalid request payload")
+	}
+
+	// Attempt to insert the user into the database
+	id, err := repository.InsertProduto(produto)
+	if err != nil {
+		// Handle the database insertion error
+		fmt.Println(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "Erro em inserir o produto no banco de dados")
+	}
+
+	// Return a success response with the inserted user ID
+	return c.JSON(http.StatusCreated, map[string]interface{}{
+		"message": fmt.Sprintf("Produto inserido com sucesso ID: %d", id),
 	})
 }
 

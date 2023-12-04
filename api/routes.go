@@ -16,6 +16,10 @@ func SetupRoutes(e *echo.Echo) {
 	e.POST("/criarusuario", func(c echo.Context) error {
 		return handler.PostUsuario(c)
 	})
+
+	e.POST("/criarproduto", func(c echo.Context) error {
+		return handler.PostProduto(c)
+	})
 	// e.GET("/usuarios", handler.GetUsuario)
 	// e.GET("/produto", handler.GetProduto)
 	// e.GET("/venda", handler.GetVenda)
