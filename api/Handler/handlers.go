@@ -4,6 +4,7 @@ import (
 	models "easytrady-backend/api/Models"
 	repository "easytrady-backend/api/Repository"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -48,6 +49,7 @@ func PostProduto(c echo.Context) error {
 func GetAllUsuarios(c echo.Context) error {
 	usuarios, err := repository.GetUsuarios()
 	if err != nil {
+		log.Fatal(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao obter usuários do banco de dados"})
 	}
 	return c.JSON(http.StatusOK, usuarios)
