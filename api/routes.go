@@ -19,4 +19,12 @@ func SetupRoutes(e *echo.Echo) {
 	e.POST("/criarproduto", func(c echo.Context) error {
 		return handler.PostProduto(c)
 	})
+
+	e.POST("/login", func(c echo.Context) error {
+		return handler.Login(c)
+	})
+
+	e.GET("/usuarios", func(c echo.Context) error {
+		return handler.GetAllUsuarios(c)
+	})
 }

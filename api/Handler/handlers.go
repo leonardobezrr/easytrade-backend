@@ -45,31 +45,36 @@ func PostProduto(c echo.Context) error {
 	})
 }
 
-// func GetUsuario(c echo.Context) error {
-// 	user := models.Usuarios{"dsdaa", "Ricardo", "ric@ric.com", "1234567"}
-// 	user2 := models.Usuarios{"1", "Leo", "leo@leo.com", "123456"}
+func GetAllUsuarios(c echo.Context) error {
+	usuarios, err := repository.GetUsuarios()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao obter usuários do banco de dados"})
+	}
+	return c.JSON(http.StatusOK, usuarios)
+}
 
-// 	users := []models.Usuarios{user, user2}
+func Login(c echo.Context) error {
+	var usuario models.Usuarios
+	if err := c.Bind(&usuario); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao decodificar dados do usuário"})
+	}
 
-// 	return c.JSON(http.StatusOK, users)
-// }
+	usuarios, err := repository.GetUsuarios()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao obter usuários do banco de dados"})
+	}
 
-// func GetProduto(c echo.Context) error {
-// 	produto := models.Produtos{"dfdsf", "Mouse", "Mouse Gamer", 10.5, 10}
-// 	return c.JSON(http.StatusOK, produto)
-// }
+	autenticado := false
+	for _, u := range usuarios {
+		if u.Email == usuario.Email && u.Senha == usuario.Senha {
+			autenticado = true
+			break
+		}
+	}
 
-// func GetVenda(c echo.Context) error {
-// 	user := models.Usuarios{"dsdaa", "Ricardo", "ric@ric.com", "1234567"}
-// 	produto := models.Produtos{"dfdsf", "Mouse", "Mouse Gamer", 10.5, 10}
-// 	produtosSlice := []models.Produtos{produto}
-// 	venda := models.Venda{"dafdfds", time.Now(), 10.5, produtosSlice, user}
-// 	return c.JSON(http.StatusOK, venda)
-// }
+	if autenticado {
+		return c.JSON(http.StatusOK, map[string]string{"message": "Login bem-sucedido para o usuário: " + usuario.Email})
+	}
 
-// func GetProdutoVenda(c echo.Context) error {
-// 	produto := models.Produtos{"dfdsf", "Mouse", "Mouse Gamer", 10.5, 10}
-// 	venda := models.Venda{"dafdfds", time.Now(), 10.5, []models.Produtos{produto}, models.Usuarios{"dsdaa", "Ricardo", "ric@ric.com", "1234567"}}
-// 	produtoVenda := models.Produto_Venda{produto.ID, venda.ID, 10.5, 1}
-// 	return c.JSON(http.StatusOK, produtoVenda)
-// }
+	return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Credenciais inválidas"})
+}

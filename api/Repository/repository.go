@@ -4,6 +4,7 @@ import (
 	db "easytrady-backend/api/DB"
 	models "easytrady-backend/api/Models"
 	"fmt"
+	"log"
 )
 
 func InsertUser(usuario models.Usuarios) (id int, err error) {
@@ -43,4 +44,31 @@ func InsertProduto(produto models.Produtos) (id int, err error) {
 	}
 
 	return
+}
+
+func GetUsuarios() ([]models.Usuarios, error) {
+	conn, err := db.OpenConnection()
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+
+	rows, err := conn.Query("SELECT * FROM usuarios;")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	var usuarios []models.Usuarios
+	for rows.Next() {
+		var usuario models.Usuarios
+		if err := rows.Scan(&usuario.ID, &usuario.Nome, &usuario.Email, &usuario.Senha); err != nil {
+			log.Fatal(err)
+			return nil, err
+		}
+		usuarios = append(usuarios, usuario)
+	}
+
+	return usuarios, nil
 }
