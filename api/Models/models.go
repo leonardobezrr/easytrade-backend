@@ -2,8 +2,6 @@ package models
 
 import "time"
 
-// esse diretório irá armazenas as structs
-
 type Usuarios struct {
 	ID    string `json:"id"`
 	Nome  string `json:"nome"`
