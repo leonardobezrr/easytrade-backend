@@ -28,6 +28,24 @@ func InsertUser(usuario models.Usuarios) (id int, err error) {
 	return
 }
 
+func UpdateUser(usuario models.Usuarios)error{
+	conn,err := db.OpenConnection()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	sql := `UPDATE usuarios SET nome=$1, email=$2, senha=$3 WHERE id=$4`
+
+	_, err = conn.Exec(sql, usuario.Nome, usuario.Email, usuario.Senha, usuario.ID)
+	if err != nil {
+		fmt.Println("Erro ao atualizar usuário no banco de dados:",err)
+		return err
+	}
+	return nil
+}
+
+
 func InsertProduto(produto models.Produtos) (id int, err error) {
 	conn, err := db.OpenConnection()
 	if err != nil {

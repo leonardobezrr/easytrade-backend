@@ -28,6 +28,30 @@ func PostUsuario(c echo.Context) error {
 	})
 }
 
+func UpdateUsuario(c echo.Context) error {
+	var usuario models.Usuarios
+	err := c.Bind(&usuario)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Invalid request payload")
+	}
+
+	id := c.Param("id")
+
+	usuario.ID = id
+
+	err = repository.UpdateUser(usuario)
+	if err != nil {
+		fmt.Println(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "Erro ao atualizar usuário no banco de dados")
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": fmt.Sprintf("Usuário atualizado com sucesso ID: %s", usuario.ID),
+	})
+}
+
+
+
 func PostProduto(c echo.Context) error {
 	produto := models.Produtos{}
 	err := c.Bind(&produto)
