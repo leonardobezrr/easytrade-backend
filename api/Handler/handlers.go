@@ -17,7 +17,7 @@ func PostUsuario(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Invalid request payload")
 	}
 
-	id, err := repository.InsertUser(usuario)
+	id, err := repository.InsertUsuario(usuario)
 	if err != nil {
 		fmt.Println(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, "Erro ao inserir usuário no banco de dados")
@@ -39,7 +39,7 @@ func UpdateUsuario(c echo.Context) error {
 
 	usuario.ID = id
 
-	err = repository.UpdateUser(usuario)
+	err = repository.UpdateUsuario(usuario)
 	if err != nil {
 		fmt.Println(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, "Erro ao atualizar usuário no banco de dados")
@@ -50,7 +50,14 @@ func UpdateUsuario(c echo.Context) error {
 	})
 }
 
-
+func GetAllUsuarios(c echo.Context) error {
+	usuarios, err := repository.GetUsuarios()
+	if err != nil {
+		log.Fatal(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao obter usuários do banco de dados"})
+	}
+	return c.JSON(http.StatusOK, usuarios)
+}
 
 func PostProduto(c echo.Context) error {
 	produto := models.Produtos{}
@@ -70,13 +77,26 @@ func PostProduto(c echo.Context) error {
 	})
 }
 
-func GetAllUsuarios(c echo.Context) error {
-	usuarios, err := repository.GetUsuarios()
+func UpdateProduto(c echo.Context) error {
+	var produto models.Produtos
+	err := c.Bind(&produto)
 	if err != nil {
-		log.Fatal(err)
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao obter usuários do banco de dados"})
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Invalid request payload")
 	}
-	return c.JSON(http.StatusOK, usuarios)
+
+	id := c.Param("id")
+
+	produto.ID = id
+
+	err = repository.UpdateProduto(produto)
+	if err != nil {
+		fmt.Println(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "Erro ao atualizar produto no banco de dados")
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": fmt.Sprintf("Produto atualizado com sucesso ID: %s", produto.ID),
+	})
 }
 
 func Login(c echo.Context) error {

@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func InsertUser(usuario models.Usuarios) (id int, err error) {
+func InsertUsuario(usuario models.Usuarios) (id int, err error) {
 
 	conn, err := db.OpenConnection()
 
@@ -28,7 +28,7 @@ func InsertUser(usuario models.Usuarios) (id int, err error) {
 	return
 }
 
-func UpdateUser(usuario models.Usuarios)error{
+func UpdateUsuario(usuario models.Usuarios)error{
 	conn,err := db.OpenConnection()
 	if err != nil {
 		return err
@@ -44,7 +44,6 @@ func UpdateUser(usuario models.Usuarios)error{
 	}
 	return nil
 }
-
 
 func InsertProduto(produto models.Produtos) (id int, err error) {
 	conn, err := db.OpenConnection()
@@ -62,6 +61,23 @@ func InsertProduto(produto models.Produtos) (id int, err error) {
 	}
 
 	return
+}
+
+func UpdateProduto(produto models.Produtos)error{
+	conn,err := db.OpenConnection()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	sql := `UPDATE produtos SET nome=$1, descricao=$2, preco=$3, qtd_estoque=$4 WHERE id=$5`
+
+	_, err = conn.Exec(sql, produto.Nome, produto.Descricao, produto.Preco, produto.Qtd_estoque,produto.ID)
+	if err != nil {
+		fmt.Println("Erro ao atualizar produto no banco de dados:",err)
+		return err
+	}
+	return nil
 }
 
 func GetUsuarios() ([]models.Usuarios, error) {
