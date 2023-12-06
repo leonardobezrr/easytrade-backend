@@ -24,6 +24,10 @@ func SetupRoutes(e *echo.Echo) {
 		return handler.PostProduto(c)
 	})
 
+	e.PUT("/atualizarproduto/:id", func(c echo.Context) error {
+		return handler.UpdateProduto(c)
+	})
+
 	e.POST("/login", func(c echo.Context) error {
 		return handler.Login(c)
 	})
