@@ -19,6 +19,10 @@ func SetupRoutes(e *echo.Echo) {
 	e.PUT("/atualizarusuario/:id", func(c echo.Context) error {
 		return handler.UpdateUsuario(c)
 	})
+
+	e.GET("/usuarios", func(c echo.Context) error {
+		return handler.GetAllUsuarios(c)
+	})
 	
 	e.POST("/criarproduto", func(c echo.Context) error {
 		return handler.PostProduto(c)
@@ -28,11 +32,12 @@ func SetupRoutes(e *echo.Echo) {
 		return handler.UpdateProduto(c)
 	})
 
+	e.DELETE("/deletarproduto/:id", func(c echo.Context) error {
+		return handler.DeleteProduto(c)
+	})
+
 	e.POST("/login", func(c echo.Context) error {
 		return handler.Login(c)
 	})
 
-	e.GET("/usuarios", func(c echo.Context) error {
-		return handler.GetAllUsuarios(c)
-	})
 }

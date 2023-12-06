@@ -80,6 +80,23 @@ func UpdateProduto(produto models.Produtos)error{
 	return nil
 }
 
+func DeleteProduto(produto models.Produtos)error{
+	conn,err := db.OpenConnection()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	sql := `DELETE FROM produtos WHERE id=$1`
+
+	_, err = conn.Exec(sql, produto.ID)
+	if err != nil {
+		fmt.Println("Erro ao deletar produto no banco de dados:",err)
+		return err
+	}
+	return nil
+}
+
 func GetUsuarios() ([]models.Usuarios, error) {
 	conn, err := db.OpenConnection()
 	if err != nil {
