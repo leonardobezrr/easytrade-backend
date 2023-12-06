@@ -12,6 +12,8 @@ func SetupRoutes(e *echo.Echo) {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
 
+	// usuarios
+
 	e.POST("/criarusuario", func(c echo.Context) error {
 		return handler.PostUsuario(c)
 	})
@@ -23,7 +25,19 @@ func SetupRoutes(e *echo.Echo) {
 	e.GET("/usuarios", func(c echo.Context) error {
 		return handler.GetAllUsuarios(c)
 	})
-	
+
+	e.POST("/login", func(c echo.Context) error {
+		return handler.Login(c)
+	})
+
+	// fim usuarios
+
+	// produtos
+
+	e.GET("/produtos", func(c echo.Context) error {
+		return handler.GetAllProdutos(c)
+	})
+
 	e.POST("/criarproduto", func(c echo.Context) error {
 		return handler.PostProduto(c)
 	})
@@ -36,8 +50,6 @@ func SetupRoutes(e *echo.Echo) {
 		return handler.DeleteProduto(c)
 	})
 
-	e.POST("/login", func(c echo.Context) error {
-		return handler.Login(c)
-	})
+	// fim produtos
 
 }

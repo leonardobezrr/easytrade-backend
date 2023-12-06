@@ -10,6 +10,43 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// funções de usuários
+
+func Login(c echo.Context) error {
+	var usuario models.Usuarios
+	if err := c.Bind(&usuario); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao decodificar dados do usuário"})
+	}
+
+	usuarios, err := repository.GetUsuarios()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao obter usuários do banco de dados"})
+	}
+
+	autenticado := false
+	for _, u := range usuarios {
+		if u.Email == usuario.Email && u.Senha == usuario.Senha {
+			autenticado = true
+			break
+		}
+	}
+
+	if autenticado {
+		return c.JSON(http.StatusOK, map[string]string{"message": "Login bem-sucedido para o usuário: " + usuario.Email})
+	}
+
+	return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Credenciais inválidas"})
+}
+
+func GetAllUsuarios(c echo.Context) error {
+	usuarios, err := repository.GetUsuarios()
+	if err != nil {
+		log.Fatal(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao obter usuários do banco de dados"})
+	}
+	return c.JSON(http.StatusOK, usuarios)
+}
+
 func PostUsuario(c echo.Context) error {
 	usuario := models.Usuarios{}
 	err := c.Bind(&usuario)
@@ -50,13 +87,17 @@ func UpdateUsuario(c echo.Context) error {
 	})
 }
 
-func GetAllUsuarios(c echo.Context) error {
-	usuarios, err := repository.GetUsuarios()
+// fim funções de usuários
+
+// funções de produtos
+
+func GetAllProdutos(c echo.Context) error {
+	produtos, err := repository.GetProdutos()
 	if err != nil {
 		log.Fatal(err)
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao obter usuários do banco de dados"})
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao obter produtos do banco de dados"})
 	}
-	return c.JSON(http.StatusOK, usuarios)
+	return c.JSON(http.StatusOK, produtos)
 }
 
 func PostProduto(c echo.Context) error {
@@ -121,28 +162,4 @@ func DeleteProduto(c echo.Context) error {
 	})
 }
 
-func Login(c echo.Context) error {
-	var usuario models.Usuarios
-	if err := c.Bind(&usuario); err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao decodificar dados do usuário"})
-	}
-
-	usuarios, err := repository.GetUsuarios()
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao obter usuários do banco de dados"})
-	}
-
-	autenticado := false
-	for _, u := range usuarios {
-		if u.Email == usuario.Email && u.Senha == usuario.Senha {
-			autenticado = true
-			break
-		}
-	}
-
-	if autenticado {
-		return c.JSON(http.StatusOK, map[string]string{"message": "Login bem-sucedido para o usuário: " + usuario.Email})
-	}
-
-	return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Credenciais inválidas"})
-}
+// fim funções de produtos
