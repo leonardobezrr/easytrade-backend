@@ -99,6 +99,28 @@ func UpdateProduto(c echo.Context) error {
 	})
 }
 
+func DeleteProduto(c echo.Context) error {
+	var produto models.Produtos
+	err := c.Bind(&produto)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Invalid request payload")
+	}
+
+	id := c.Param("id")
+
+	produto.ID = id
+
+	err = repository.DeleteProduto(produto)
+	if err != nil {
+		fmt.Println(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "Erro ao deletar produto no banco de dados")
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": fmt.Sprintf("Produto deletado com sucesso ID: %s", produto.ID),
+	})
+}
+
 func Login(c echo.Context) error {
 	var usuario models.Usuarios
 	if err := c.Bind(&usuario); err != nil {
