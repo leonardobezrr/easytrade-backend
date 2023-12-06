@@ -18,7 +18,7 @@ func OpenConnection() (*sql.DB, error) {
 	dbname := os.Getenv("DATABASE_NAME")
 
 	// Construção da string de conexão
-	sc := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	sc := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s", host, port, user, password, dbname)
 
 	// Abertura da conexão
 	conn, err := sql.Open("postgres", sc)
