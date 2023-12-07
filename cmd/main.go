@@ -20,9 +20,10 @@ func main() {
 
 	// Configurar o middleware CORS com as opções desejadas
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://127.0.0.1:5500"},                                            // Adicione suas origens permitidas
-		AllowMethods: []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete}, // Adicione métodos permitidos
-		AllowHeaders: []string{echo.HeaderContentType},                                             // Adicione cabeçalhos permitidos
+		// AllowOrigins: []string{"*"},
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete},
+		AllowHeaders: []string{echo.HeaderContentType},
 	}))
 
 	api.SetupRoutes(e)
