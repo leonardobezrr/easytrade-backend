@@ -48,4 +48,12 @@ func SetupRoutes(e *echo.Echo) {
 
 	// fim produtos
 
+	// vendas
+
+	e.POST("/criarvenda", func(c echo.Context) error {
+		return handler.PostVenda(c)
+	})
+
+	// fim vendas
+
 }

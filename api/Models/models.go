@@ -27,9 +27,9 @@ type Produto_Venda struct {
 }
 
 type Venda struct {
-	ID          string    `json:"id"`
-	Data_venda  time.Time `json:"date"`
-	Valor_venda float64   `json:"valor_venda"`
-	Produto     []Produtos
-	Usuarios
+	ID          string          `json:"id"`
+	Data_venda  time.Time       `json:"date"`
+	Valor_venda float64         `json:"valor_venda"`
+	Produtos    []Produto_Venda `json:"produtos"`
+	Usuarios    int             `json:"id_usuario"`
 }
