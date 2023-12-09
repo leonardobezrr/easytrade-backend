@@ -10,15 +10,15 @@ func SetupRoutes(e *echo.Echo) {
 
 	// usuarios
 
-	e.POST("/criarusuario", func(c echo.Context) error {
+	e.POST("/usuarios/criar", func(c echo.Context) error {
 		return handler.PostUsuario(c)
 	})
 
-	e.PUT("/atualizarusuario/:id", func(c echo.Context) error {
+	e.PUT("/usuarios/atualizar/:id", func(c echo.Context) error {
 		return handler.UpdateUsuario(c)
 	})
 
-	e.GET("/usuarios", func(c echo.Context) error {
+	e.GET("/usuarios/listar", func(c echo.Context) error {
 		return handler.GetAllUsuarios(c)
 	})
 
@@ -30,19 +30,19 @@ func SetupRoutes(e *echo.Echo) {
 
 	// produtos
 
-	e.GET("/produtos", func(c echo.Context) error {
+	e.GET("/produtos/listar", func(c echo.Context) error {
 		return handler.GetAllProdutos(c)
 	})
 
-	e.POST("/criarproduto", func(c echo.Context) error {
+	e.POST("/produtos/criar", func(c echo.Context) error {
 		return handler.PostProduto(c)
 	})
 
-	e.PUT("/atualizarproduto/:id", func(c echo.Context) error {
+	e.PUT("/produtos/atualizar/:id", func(c echo.Context) error {
 		return handler.UpdateProduto(c)
 	})
 
-	e.DELETE("/deletarproduto/:id", func(c echo.Context) error {
+	e.DELETE("/produtos/deleter/:id", func(c echo.Context) error {
 		return handler.DeleteProduto(c)
 	})
 
@@ -50,7 +50,7 @@ func SetupRoutes(e *echo.Echo) {
 
 	// vendas
 
-	e.POST("/criarvenda", func(c echo.Context) error {
+	e.POST("/vendas/criar", func(c echo.Context) error {
 		return handler.PostVenda(c)
 	})
 
