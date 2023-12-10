@@ -72,6 +72,14 @@ func DeleteVenda(venda models.Venda) error {
 	}
 	defer conn.Close()
 
+	sqlProdutoVenda := `DELETE FROM produtos_venda WHERE id_venda=$1`
+
+	_, err = conn.Exec(sqlProdutoVenda, venda.ID)
+	if err != nil {
+		fmt.Println("Erro ao deletar venda na tabela produtos_venda no banco de dados:", err)
+		return err
+	}
+
 	sql := `DELETE FROM vendas WHERE id=$1`
 
 	_, err = conn.Exec(sql, venda.ID)
@@ -79,5 +87,6 @@ func DeleteVenda(venda models.Venda) error {
 		fmt.Println("Erro ao deletar venda no banco de dados:", err)
 		return err
 	}
+
 	return nil
 }
