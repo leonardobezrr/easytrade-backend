@@ -54,7 +54,7 @@ func SetupRoutes(e *echo.Echo) {
 		return handler.PostVenda(c)
 	})
 
-	e.GET("/venda", func(c echo.Context) error {
+	e.GET("/vendas/listar", func(c echo.Context) error {
 		return handler.GetAllVenda(c)
 	})
 
