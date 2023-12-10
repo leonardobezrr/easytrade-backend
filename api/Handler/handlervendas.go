@@ -39,3 +39,25 @@ func GetAllVenda(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, vendas)
 }
+
+func DeleteVenda(c echo.Context) error {
+	var venda models.Venda
+	err := c.Bind(&venda)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Invalid request payload")
+	}
+
+	id := c.Param("id")
+
+	venda.ID = id
+
+	err = repository.DeleteVenda(venda)
+	if err != nil {
+		fmt.Println(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "Erro ao deletar venda no banco de dados")
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": fmt.Sprintf("Venda deletada com sucesso ID: %s", venda.ID),
+	})
+}

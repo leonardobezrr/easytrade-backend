@@ -58,8 +58,8 @@ func SetupRoutes(e *echo.Echo) {
 		return handler.GetAllVenda(c)
 	})
 
-	e.PUT("/vendas/deletar/:id", func(c echo.Context) error {
-		return nil
+	e.DELETE("/vendas/deletar/:id", func(c echo.Context) error {
+		return handler.DeleteVenda(c)
 	})
 
 	// fim vendas
