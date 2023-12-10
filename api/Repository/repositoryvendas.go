@@ -38,7 +38,7 @@ func InsertVenda(venda models.Venda) (id int, err error) {
 	return id, nil
 }
 
-func GetVendas() ([]models.Venda, error) {
+func GetVenda() ([]models.Venda, error) {
 	conn, err := db.OpenConnection()
 	if err != nil {
 		return nil, err
@@ -55,7 +55,7 @@ func GetVendas() ([]models.Venda, error) {
 	var vendas []models.Venda
 	for rows.Next() {
 		var venda models.Venda
-		if err := rows.Scan(&venda.ID, &venda.Data_venda, &venda.Usuarios, &venda.Valor_venda); err != nil {
+		if err := rows.Scan(&venda.ID, &venda.Data_venda, &venda.Valor_venda, &venda.Usuarios); err != nil {
 			log.Fatal(err)
 			return nil, err
 		}

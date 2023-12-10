@@ -31,8 +31,8 @@ func PostVenda(c echo.Context) error {
 	})
 }
 
-func GetAllVendas(c echo.Context) error {
-	vendas, err := repository.GetVendas()
+func GetAllVenda(c echo.Context) error {
+	vendas, err := repository.GetVenda()
 	if err != nil {
 		log.Fatal(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao obter vendas do banco de dados"})

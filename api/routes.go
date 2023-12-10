@@ -55,7 +55,11 @@ func SetupRoutes(e *echo.Echo) {
 	})
 
 	e.GET("/vendas/listar", func(c echo.Context) error {
+<<<<<<< HEAD
 		return handler.GetAllVendas(c)
+=======
+		return handler.GetAllVenda(c)
+>>>>>>> 4dd162a91f540e9699f88525867cee2a2861518e
 	})
 
 	// fim vendas
