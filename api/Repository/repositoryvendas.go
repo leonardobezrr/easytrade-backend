@@ -64,3 +64,20 @@ func GetVenda() ([]models.Venda, error) {
 
 	return vendas, nil
 }
+
+func DeleteVenda(venda models.Venda) error {
+	conn, err := db.OpenConnection()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	sql := `DELETE FROM vendas WHERE id=$1`
+
+	_, err = conn.Exec(sql, venda.ID)
+	if err != nil {
+		fmt.Println("Erro ao deletar venda no banco de dados:", err)
+		return err
+	}
+	return nil
+}
