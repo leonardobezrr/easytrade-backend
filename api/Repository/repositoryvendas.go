@@ -54,7 +54,7 @@ func GetVenda() ([]models.Venda, error) {
 
 	var vendas []models.Venda
 	for rows.Next() {
-		var venda models.Venda 
+		var venda models.Venda
 		if err := rows.Scan(&venda.ID, &venda.Data_venda, &venda.Valor_venda, &venda.Usuarios); err != nil {
 			log.Fatal(err)
 			return nil, err
@@ -63,4 +63,30 @@ func GetVenda() ([]models.Venda, error) {
 	}
 
 	return vendas, nil
+}
+
+func DeleteVenda(venda models.Venda) error {
+	conn, err := db.OpenConnection()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	sqlProdutoVenda := `DELETE FROM produtos_venda WHERE id_venda=$1`
+
+	_, err = conn.Exec(sqlProdutoVenda, venda.ID)
+	if err != nil {
+		fmt.Println("Erro ao deletar venda na tabela produtos_venda no banco de dados:", err)
+		return err
+	}
+
+	sql := `DELETE FROM vendas WHERE id=$1`
+
+	_, err = conn.Exec(sql, venda.ID)
+	if err != nil {
+		fmt.Println("Erro ao deletar venda no banco de dados:", err)
+		return err
+	}
+
+	return nil
 }
