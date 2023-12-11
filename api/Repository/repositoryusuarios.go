@@ -42,6 +42,11 @@ func InsertUsuario(usuario models.Usuarios) (id int, err error) {
 	}
 	defer conn.Close()
 
+	err = service.CheckEmailExists(conn, usuario.Email)
+	if err != nil {
+		return 0, err
+	}
+
 	err = service.CheckMail(usuario.Email)
 	if err != nil {
 		return 0, err
