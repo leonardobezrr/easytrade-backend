@@ -3,10 +3,10 @@ package repository
 import (
 	db "easytrady-backend/api/DB"
 	models "easytrady-backend/api/Models"
+	service "easytrady-backend/api/Service"
 	"fmt"
 	"log"
 
-	"github.com/badoux/checkmail"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -44,9 +44,8 @@ func InsertUsuario(usuario models.Usuarios) (id int, err error) {
 	}
 	defer conn.Close()
 
-	err = checkmail.ValidateFormat(usuario.Email)
+	err = service.CheckMail(usuario.Email)
 	if err != nil {
-		fmt.Println("Formato de e-mail inválido:")
 		return 0, err
 	}
 
