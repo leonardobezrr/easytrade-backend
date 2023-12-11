@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"github.com/badoux/checkmail"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetUsuarios() ([]models.Usuarios, error) {
@@ -37,30 +38,51 @@ func GetUsuarios() ([]models.Usuarios, error) {
 }
 
 func InsertUsuario(usuario models.Usuarios) (id int, err error) {
-
 	conn, err := db.OpenConnection()
-
 	if err != nil {
 		return
 	}
-
 	defer conn.Close()
 
-	sql := `INSERT INTO usuarios (nome, email, senha) VALUES ($1, $2, $3) RETURNING id`
-
+	// Verificação de e-mail
 	err = checkmail.ValidateFormat(usuario.Email)
 	if err != nil {
 		fmt.Println("Formato de e-mail inválido:")
 		return 0, err
 	}
 
-	err = conn.QueryRow(sql, usuario.Nome, usuario.Email, usuario.Senha).Scan(&id)
+	// Verificar se a senha contém pelo menos 4 caracteres
+	if len(usuario.Senha) < 4 {
+		errMsg := "A senha deve conter pelo menos 4 caracteres."
+		fmt.Println(errMsg)
+		return 0, fmt.Errorf(errMsg)
+	}	
 
+	// Criptografar senha
+	hashedSenha, err := hashSenha(usuario.Senha)
 	if err != nil {
-		fmt.Println("Erro ao inserir produto no banco de dados:", err)
+		fmt.Println("Erro ao criar hash da senha:", err)
+		return 0, err
+	}
+
+	sql := `INSERT INTO usuarios (nome, email, senha) VALUES ($1, $2, $3) RETURNING id`
+
+	err = conn.QueryRow(sql, usuario.Nome, usuario.Email, hashedSenha).Scan(&id)
+	if err != nil {
+		errMsg := fmt.Sprintf("Erro ao inserir usuário no banco de dados: %s", err)
+		fmt.Println(errMsg)
+		return 0, fmt.Errorf(errMsg)
 	}
 
 	return
+}
+
+func hashSenha(senha string) (string, error) {
+	hashedSenha, err := bcrypt.GenerateFromPassword([]byte(senha), bcrypt.MinCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hashedSenha), nil
 }
 
 func UpdateUsuario(usuario models.Usuarios) error {
