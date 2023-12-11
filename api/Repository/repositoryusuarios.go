@@ -3,11 +3,9 @@ package repository
 import (
 	db "easytrady-backend/api/DB"
 	models "easytrady-backend/api/Models"
+	service "easytrady-backend/api/Service"
 	"fmt"
 	"log"
-
-	"github.com/badoux/checkmail"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func GetUsuarios() ([]models.Usuarios, error) {
@@ -44,22 +42,23 @@ func InsertUsuario(usuario models.Usuarios) (id int, err error) {
 	}
 	defer conn.Close()
 
-	// Verificação de e-mail
-	err = checkmail.ValidateFormat(usuario.Email)
+	err = service.CheckEmailExists(conn, usuario.Email)
 	if err != nil {
-		fmt.Println("Formato de e-mail inválido:")
 		return 0, err
 	}
 
-	// Verificar se a senha contém pelo menos 4 caracteres
-	if len(usuario.Senha) < 4 {
-		errMsg := "A senha deve conter pelo menos 4 caracteres."
+	err = service.CheckMail(usuario.Email)
+	if err != nil {
+		return 0, err
+	}
+
+	if len(usuario.Senha) < 6 {
+		errMsg := "A senha deve conter pelo menos 6 caracteres."
 		fmt.Println(errMsg)
 		return 0, fmt.Errorf(errMsg)
-	}	
+	}
 
-	// Criptografar senha
-	hashedSenha, err := hashSenha(usuario.Senha)
+	hashedSenha, err := service.HashSenha(usuario.Senha)
 	if err != nil {
 		fmt.Println("Erro ao criar hash da senha:", err)
 		return 0, err
@@ -75,14 +74,6 @@ func InsertUsuario(usuario models.Usuarios) (id int, err error) {
 	}
 
 	return
-}
-
-func hashSenha(senha string) (string, error) {
-	hashedSenha, err := bcrypt.GenerateFromPassword([]byte(senha), bcrypt.MinCost)
-	if err != nil {
-		return "", err
-	}
-	return string(hashedSenha), nil
 }
 
 func UpdateUsuario(usuario models.Usuarios) error {
