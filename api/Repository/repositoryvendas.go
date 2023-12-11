@@ -4,6 +4,7 @@ import (
 	db "easytrady-backend/api/DB"
 	models "easytrady-backend/api/Models"
 	"fmt"
+	"log"
 )
 
 func InsertVenda(venda models.Venda) (id int, err error) {
@@ -35,4 +36,57 @@ func InsertVenda(venda models.Venda) (id int, err error) {
 	}
 
 	return id, nil
+}
+
+func GetVenda() ([]models.Venda, error) {
+	conn, err := db.OpenConnection()
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+
+	rows, err := conn.Query("SELECT * FROM vendas;")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	var vendas []models.Venda
+	for rows.Next() {
+		var venda models.Venda
+		if err := rows.Scan(&venda.ID, &venda.Data_venda, &venda.Valor_venda, &venda.Usuarios); err != nil {
+			log.Fatal(err)
+			return nil, err
+		}
+		vendas = append(vendas, venda)
+	}
+
+	return vendas, nil
+}
+
+func DeleteVenda(venda models.Venda) error {
+	conn, err := db.OpenConnection()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	sqlProdutoVenda := `DELETE FROM produtos_venda WHERE id_venda=$1`
+
+	_, err = conn.Exec(sqlProdutoVenda, venda.ID)
+	if err != nil {
+		fmt.Println("Erro ao deletar venda na tabela produtos_venda no banco de dados:", err)
+		return err
+	}
+
+	sql := `DELETE FROM vendas WHERE id=$1`
+
+	_, err = conn.Exec(sql, venda.ID)
+	if err != nil {
+		fmt.Println("Erro ao deletar venda no banco de dados:", err)
+		return err
+	}
+
+	return nil
 }

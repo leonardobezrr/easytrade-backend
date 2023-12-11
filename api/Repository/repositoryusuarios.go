@@ -5,6 +5,8 @@ import (
 	models "easytrady-backend/api/Models"
 	"fmt"
 	"log"
+
+	"github.com/badoux/checkmail"
 )
 
 func GetUsuarios() ([]models.Usuarios, error) {
@@ -45,6 +47,12 @@ func InsertUsuario(usuario models.Usuarios) (id int, err error) {
 	defer conn.Close()
 
 	sql := `INSERT INTO usuarios (nome, email, senha) VALUES ($1, $2, $3) RETURNING id`
+
+	err = checkmail.ValidateFormat(usuario.Email)
+	if err != nil {
+		fmt.Println("Formato de e-mail inválido:")
+		return 0, err
+	}
 
 	err = conn.QueryRow(sql, usuario.Nome, usuario.Email, usuario.Senha).Scan(&id)
 
