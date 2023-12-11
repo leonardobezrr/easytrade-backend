@@ -44,21 +44,18 @@ func InsertUsuario(usuario models.Usuarios) (id int, err error) {
 	}
 	defer conn.Close()
 
-	// Verificação de e-mail
 	err = checkmail.ValidateFormat(usuario.Email)
 	if err != nil {
 		fmt.Println("Formato de e-mail inválido:")
 		return 0, err
 	}
 
-	// Verificar se a senha contém pelo menos 4 caracteres
-	if len(usuario.Senha) < 4 {
-		errMsg := "A senha deve conter pelo menos 4 caracteres."
+	if len(usuario.Senha) < 6 {
+		errMsg := "A senha deve conter pelo menos 6 caracteres."
 		fmt.Println(errMsg)
 		return 0, fmt.Errorf(errMsg)
-	}	
+	}
 
-	// Criptografar senha
 	hashedSenha, err := hashSenha(usuario.Senha)
 	if err != nil {
 		fmt.Println("Erro ao criar hash da senha:", err)

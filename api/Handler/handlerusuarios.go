@@ -24,14 +24,10 @@ func Login(c echo.Context) error {
 
 	autenticado := false
 	for _, u := range usuarios {
-		err := bcrypt.CompareHashAndPassword([]byte(u.Senha),[]byte(usuario.Senha))
-		if err == nil  && u.Email == usuario.Email{
+		err := bcrypt.CompareHashAndPassword([]byte(u.Senha), []byte(usuario.Senha))
+		if err == nil && u.Email == usuario.Email {
 			autenticado = true
 			break
-		}else if err == bcrypt.ErrMismatchedHashAndPassword{
-			fmt.Println("Senha incorrreta !")
-		}else {
-			fmt.Println("Erro ao comparar senhas:", err)
 		}
 	}
 
