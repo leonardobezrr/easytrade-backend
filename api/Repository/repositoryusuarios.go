@@ -6,8 +6,6 @@ import (
 	service "easytrady-backend/api/Service"
 	"fmt"
 	"log"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 func GetUsuarios() ([]models.Usuarios, error) {
@@ -55,7 +53,7 @@ func InsertUsuario(usuario models.Usuarios) (id int, err error) {
 		return 0, fmt.Errorf(errMsg)
 	}
 
-	hashedSenha, err := hashSenha(usuario.Senha)
+	hashedSenha, err := service.HashSenha(usuario.Senha)
 	if err != nil {
 		fmt.Println("Erro ao criar hash da senha:", err)
 		return 0, err
@@ -71,14 +69,6 @@ func InsertUsuario(usuario models.Usuarios) (id int, err error) {
 	}
 
 	return
-}
-
-func hashSenha(senha string) (string, error) {
-	hashedSenha, err := bcrypt.GenerateFromPassword([]byte(senha), bcrypt.MinCost)
-	if err != nil {
-		return "", err
-	}
-	return string(hashedSenha), nil
 }
 
 func UpdateUsuario(usuario models.Usuarios) error {
