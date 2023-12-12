@@ -31,11 +31,17 @@ func Login(c echo.Context) error {
 		}
 	}
 
+	vendas, err := repository.GetVendasByUsuarioID(usuarioAutenticado.ID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao obter vendas do usuário"})
+	}
+
 	if usuarioAutenticado.ID != "" {
 		response := map[string]interface{}{
-			"id":    usuarioAutenticado.ID,
-			"nome":  usuarioAutenticado.Nome,
-			"email": usuarioAutenticado.Email,
+			"id":     usuarioAutenticado.ID,
+			"nome":   usuarioAutenticado.Nome,
+			"email":  usuarioAutenticado.Email,
+			"vendas": vendas,
 		}
 
 		return c.JSON(http.StatusOK, response)

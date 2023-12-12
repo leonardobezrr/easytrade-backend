@@ -40,6 +40,17 @@ func GetAllVenda(c echo.Context) error {
 	return c.JSON(http.StatusOK, vendas)
 }
 
+func GetVendasByUsuarioID(c echo.Context) error {
+	usuarioID := c.Param("usuarioID")
+
+	vendas, err := repository.GetVendasByUsuarioID(usuarioID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao obter vendas do usuário"})
+	}
+
+	return c.JSON(http.StatusOK, vendas)
+}
+
 func DeleteVenda(c echo.Context) error {
 	var venda models.Venda
 	err := c.Bind(&venda)
