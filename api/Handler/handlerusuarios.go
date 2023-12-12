@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Login(c echo.Context) error {
@@ -23,7 +24,8 @@ func Login(c echo.Context) error {
 
 	autenticado := false
 	for _, u := range usuarios {
-		if u.Email == usuario.Email && u.Senha == usuario.Senha {
+		err := bcrypt.CompareHashAndPassword([]byte(u.Senha), []byte(usuario.Senha))
+		if err == nil && u.Email == usuario.Email {
 			autenticado = true
 			break
 		}

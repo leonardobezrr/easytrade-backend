@@ -3,10 +3,9 @@ package repository
 import (
 	db "easytrady-backend/api/DB"
 	models "easytrady-backend/api/Models"
+	service "easytrady-backend/api/Service"
 	"fmt"
 	"log"
-
-	"github.com/badoux/checkmail"
 )
 
 func GetUsuarios() ([]models.Usuarios, error) {
@@ -37,27 +36,41 @@ func GetUsuarios() ([]models.Usuarios, error) {
 }
 
 func InsertUsuario(usuario models.Usuarios) (id int, err error) {
-
 	conn, err := db.OpenConnection()
-
 	if err != nil {
 		return
 	}
-
 	defer conn.Close()
 
-	sql := `INSERT INTO usuarios (nome, email, senha) VALUES ($1, $2, $3) RETURNING id`
-
-	err = checkmail.ValidateFormat(usuario.Email)
+	err = service.CheckEmailExists(conn, usuario.Email)
 	if err != nil {
-		fmt.Println("Formato de e-mail inválido:")
 		return 0, err
 	}
 
-	err = conn.QueryRow(sql, usuario.Nome, usuario.Email, usuario.Senha).Scan(&id)
-
+	err = service.CheckMail(usuario.Email)
 	if err != nil {
-		fmt.Println("Erro ao inserir produto no banco de dados:", err)
+		return 0, err
+	}
+
+	if len(usuario.Senha) < 6 {
+		errMsg := "A senha deve conter pelo menos 6 caracteres."
+		fmt.Println(errMsg)
+		return 0, fmt.Errorf(errMsg)
+	}
+
+	hashedSenha, err := service.HashSenha(usuario.Senha)
+	if err != nil {
+		fmt.Println("Erro ao criar hash da senha:", err)
+		return 0, err
+	}
+
+	sql := `INSERT INTO usuarios (nome, email, senha) VALUES ($1, $2, $3) RETURNING id`
+
+	err = conn.QueryRow(sql, usuario.Nome, usuario.Email, hashedSenha).Scan(&id)
+	if err != nil {
+		errMsg := fmt.Sprintf("Erro ao inserir usuário no banco de dados: %s", err)
+		fmt.Println(errMsg)
+		return 0, fmt.Errorf(errMsg)
 	}
 
 	return
