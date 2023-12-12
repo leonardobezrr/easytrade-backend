@@ -22,17 +22,23 @@ func Login(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao obter usuários do banco de dados"})
 	}
 
-	autenticado := false
+	var usuarioAutenticado models.Usuarios
 	for _, u := range usuarios {
 		err := bcrypt.CompareHashAndPassword([]byte(u.Senha), []byte(usuario.Senha))
 		if err == nil && u.Email == usuario.Email {
-			autenticado = true
+			usuarioAutenticado = u
 			break
 		}
 	}
 
-	if autenticado {
-		return c.JSON(http.StatusOK, map[string]string{"message": "Login bem-sucedido para o usuário: " + usuario.Email})
+	if usuarioAutenticado.ID != "" {
+		response := map[string]interface{}{
+			"id":    usuarioAutenticado.ID,
+			"nome":  usuarioAutenticado.Nome,
+			"email": usuarioAutenticado.Email,
+		}
+
+		return c.JSON(http.StatusOK, response)
 	}
 
 	return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Credenciais inválidas"})

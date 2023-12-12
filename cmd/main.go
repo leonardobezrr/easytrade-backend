@@ -18,7 +18,6 @@ func main() {
 
 	e := echo.New()
 
-	// Configurar o middleware CORS com as opções desejadas
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		// AllowOrigins: []string{"*"},
 		AllowOrigins: []string{"*"},

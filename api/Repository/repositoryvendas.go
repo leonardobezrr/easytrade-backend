@@ -45,10 +45,10 @@ func GetVenda() ([]models.Venda, error) {
 	}
 	defer conn.Close()
 
-	rows, err := conn.Query("SELECT * FROM vendas;")
-
+	rows, err := conn.Query("SELECT * FROM vendas")
 	if err != nil {
 		log.Fatal(err)
+		return nil, err
 	}
 	defer rows.Close()
 
