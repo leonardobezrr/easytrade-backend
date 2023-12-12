@@ -38,6 +38,35 @@ func InsertVenda(venda models.Venda) (id int, err error) {
 	return id, nil
 }
 
+func GetVendasByUsuarioID(usuarioID string) ([]models.Venda, error) {
+
+	conn, err := db.OpenConnection()
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+
+	query := "SELECT * FROM vendas WHERE id_usuario = $1"
+	rows, err := conn.Query(query, usuarioID)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var vendas []models.Venda
+	for rows.Next() {
+		var venda models.Venda
+		if err := rows.Scan(&venda.ID, &venda.Data_venda, &venda.Valor_venda, &venda.Usuarios); err != nil {
+			log.Fatal(err)
+			return nil, err
+		}
+		vendas = append(vendas, venda)
+	}
+
+	return vendas, nil
+}
+
 func GetVenda() ([]models.Venda, error) {
 	conn, err := db.OpenConnection()
 	if err != nil {
@@ -45,10 +74,10 @@ func GetVenda() ([]models.Venda, error) {
 	}
 	defer conn.Close()
 
-	rows, err := conn.Query("SELECT * FROM vendas;")
-
+	rows, err := conn.Query("SELECT * FROM vendas")
 	if err != nil {
 		log.Fatal(err)
+		return nil, err
 	}
 	defer rows.Close()
 
