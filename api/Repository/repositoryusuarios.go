@@ -60,12 +60,11 @@ func GetUsuarioByID(id int) (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	// Construa a resposta desejada
 	response := map[string]interface{}{
 		"id":     usuario.ID,
 		"nome":   usuario.Nome,
 		"email":  usuario.Email,
-		"vendas": nil, // Pode adicionar a lógica para recuperar as vendas, se necessário
+		"vendas": nil,
 	}
 
 	return response, nil
