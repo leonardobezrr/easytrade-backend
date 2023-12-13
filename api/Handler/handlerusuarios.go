@@ -72,9 +72,20 @@ func PostUsuario(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Erro ao inserir usuário no banco de dados")
 	}
 
-	return c.JSON(http.StatusCreated, map[string]interface{}{
-		"message": fmt.Sprintf("Usuário inserido com sucesso ID: %d", id),
-	})
+	insertedUser, err := repository.GetUsuarioByID(id)
+	if err != nil {
+		fmt.Println(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "Erro ao obter informações do usuário")
+	}
+
+	response := map[string]interface{}{
+		"id":     insertedUser["id"],
+		"nome":   insertedUser["nome"],
+		"email":  insertedUser["email"],
+		"vendas": nil,
+	}
+
+	return c.JSON(http.StatusCreated, response)
 }
 
 func UpdateUsuario(c echo.Context) error {

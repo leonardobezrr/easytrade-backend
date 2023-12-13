@@ -19,6 +19,17 @@ func GetAllProdutos(c echo.Context) error {
 	return c.JSON(http.StatusOK, produtos)
 }
 
+func GetProdutosByUsuarioID(c echo.Context) error {
+	usuarioID := c.Param("usuarioID")
+
+	produtos, err := repository.GetProdutosByUsuarioID(usuarioID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Erro ao obter produtos do usuário"})
+	}
+
+	return c.JSON(http.StatusOK, produtos)
+}
+
 func PostProduto(c echo.Context) error {
 	produto := models.Produtos{}
 	err := c.Bind(&produto)
