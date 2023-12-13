@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"database/sql"
 	db "easytrady-backend/api/DB"
 	models "easytrady-backend/api/Models"
 	service "easytrady-backend/api/Service"
@@ -33,6 +34,41 @@ func GetUsuarios() ([]models.Usuarios, error) {
 	}
 
 	return usuarios, nil
+}
+
+func GetUsuarioByID(id int) (map[string]interface{}, error) {
+	conn, err := db.OpenConnection()
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+
+	stmt, err := conn.Prepare("SELECT * FROM usuarios WHERE id = $1")
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	row := stmt.QueryRow(id)
+
+	var usuario models.Usuarios
+	err = row.Scan(&usuario.ID, &usuario.Nome, &usuario.Email, &usuario.Senha)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("Usuário com ID %d não encontrado", id)
+		}
+		return nil, err
+	}
+
+	// Construa a resposta desejada
+	response := map[string]interface{}{
+		"id":     usuario.ID,
+		"nome":   usuario.Nome,
+		"email":  usuario.Email,
+		"vendas": nil, // Pode adicionar a lógica para recuperar as vendas, se necessário
+	}
+
+	return response, nil
 }
 
 func InsertUsuario(usuario models.Usuarios) (id int, err error) {
