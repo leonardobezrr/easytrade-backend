@@ -34,6 +34,10 @@ func SetupRoutes(e *echo.Echo) {
 		return handler.GetAllProdutos(c)
 	})
 
+	e.GET("/produtos/listar/:usuarioID", func(c echo.Context) error {
+		return handler.GetProdutosByUsuarioID(c)
+	})
+
 	e.POST("/produtos/criar", func(c echo.Context) error {
 		return handler.PostProduto(c)
 	})

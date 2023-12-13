@@ -34,6 +34,35 @@ func GetProdutos() ([]models.Produtos, error) {
 	return produtos, nil
 }
 
+func GetProdutosByUsuarioID(usuarioID string) ([]models.Produtos, error) {
+
+	conn, err := db.OpenConnection()
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+
+	query := "SELECT * FROM produtos WHERE id_usuario = $1"
+	rows, err := conn.Query(query, usuarioID)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var produtos []models.Produtos
+	for rows.Next() {
+		var produto models.Produtos
+		if err := rows.Scan(&produto.ID, &produto.Nome, &produto.Descricao, &produto.Preco, &produto.Qtd_estoque, &produto.Usuarios); err != nil {
+			log.Fatal(err)
+			return nil, err
+		}
+		produtos = append(produtos, produto)
+	}
+
+	return produtos, nil
+}
+
 func InsertProduto(produto models.Produtos) (id int, err error) {
 	conn, err := db.OpenConnection()
 	if err != nil {
