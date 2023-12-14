@@ -111,23 +111,23 @@ func UpdateUsuario(c echo.Context) error {
 }
 
 func DeleteUsuario(c echo.Context) error {
-	var usuario models.Usuarios
-	err := c.Bind(&usuario)
+	var usuarios models.Usuarios
+	err := c.Bind(&usuarios)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Invalid request payload")
 	}
 
 	id := c.Param("id")
 
-	usuario.ID = id
+	usuarios.ID = id
 
-	err = repository.DeleteUsuario(usuario)
+	err = repository.DeleteUsuario(usuarios)
 	if err != nil {
 		fmt.Println(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, "Erro ao deletar usuario no banco de dados")
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": fmt.Sprintf("Usuario deletado com sucesso ID: %s", usuario.ID),
+		"message": fmt.Sprintf("Usuario deletado com sucesso ID: %s", usuarios.ID),
 	})
 }
