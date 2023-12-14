@@ -18,6 +18,10 @@ func SetupRoutes(e *echo.Echo) {
 		return handler.UpdateUsuario(c)
 	})
 
+	e.DELETE("/usuarios/deleter/:id", func(c echo.Context) error {
+		return handler.DeleteUsuario(c)
+	})
+
 	e.GET("/usuarios/listar", func(c echo.Context) error {
 		return handler.GetAllUsuarios(c)
 	})

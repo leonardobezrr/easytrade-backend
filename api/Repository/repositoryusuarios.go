@@ -125,3 +125,21 @@ func UpdateUsuario(usuario models.Usuarios) error {
 	}
 	return nil
 }
+
+func DeleteUsuario(usuario models.Usuarios) error {
+	conn, err := db.OpenConnection()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	sql := `DELETE FROM usuarios WHERE id=$1`
+
+	_, err = conn.Exec(sql, usuario.ID)
+	if err != nil {
+		fmt.Println("Erro ao deletar usuário no banco de dados:", err)
+		return err
+	}
+	return nil
+}
+
