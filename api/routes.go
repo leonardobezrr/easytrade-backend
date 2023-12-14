@@ -70,6 +70,10 @@ func SetupRoutes(e *echo.Echo) {
 		return handler.GetVendasByUsuarioID(c)
 	})
 
+	e.GET("/produtosvenda/listar/:vendaID", func(c echo.Context) error {
+		return handler.GetProdutoByVendaId(c)
+	})
+
 	e.DELETE("/vendas/deletar/:id", func(c echo.Context) error {
 		return handler.DeleteVenda(c)
 	})
